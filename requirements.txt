@@ -1,0 +1,17 @@
+esda.moran
+geopandas
+json
+libpysal
+matplotlib
+numpy
+openai
+os
+osmium
+osmium-tool
+pandas
+pyreadstat
+pyrosm
+re
+shapely
+time
+tqdm

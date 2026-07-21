@@ -1,0 +1,92 @@
+import os
+import geopandas as gpd
+import pandas as pd
+from pyrosm import OSM
+from shapely.geometry import Point
+from tqdm import tqdm
+import json
+
+# Set paths
+pbf_folder = "c:/MYFILEPATH/Clinics"
+shapefile_path = "c:/MYFILEPATH/Zim_Fixed_Constituencies.shp"
+output_json = "clinics_counts_by_region_month.json"
+
+# Load electoral districts
+districts = gpd.read_file(shapefile_path)
+districts = districts.to_crs(epsg=4326)
+
+# Check column names
+print("District columns:", districts.columns)
+
+# Initialize results list
+results = []
+
+# Define date range
+months = pd.date_range(start="2015-09-01", end="2023-09-01", freq="MS")
+
+for month in tqdm(months, desc="Processing months"):
+    year = month.year
+    m = str(month.month).zfill(2)
+
+    filename = f"OSM-Zimbabwe-clinics-{year}-{m}-01.pbf"
+    filepath = os.path.join(pbf_folder, filename)
+
+    if not os.path.exists(filepath):
+        print(f"File not found: {filepath}")
+        continue
+
+    print(f"Reading POIs from: {filepath}")
+    osm = OSM(filepath)
+    custom_filter = {
+        "amenity": ["clinic", "hospital"]
+    }
+    clinics = osm.get_data_by_custom_criteria(
+        custom_filter=custom_filter,
+        keep_nodes=True,
+        keep_ways=True,
+        keep_relations=False
+    )
+    #clinics = osm.get_pois(custom_filter=custom_filter)
+
+    if clinics is None or clinics.empty:
+        print(f"No POIs found for: {filename}")
+        continue
+
+    # Points only
+    clinics = clinics[clinics.geometry.type == "Point"]
+    clinics = clinics.drop_duplicates(subset="geometry")
+    clinics = gpd.GeoDataFrame(clinics, geometry="geometry", crs="EPSG:4326")
+
+    # Spatial join
+    joined = gpd.sjoin(clinics, districts, how="inner", predicate="within")
+
+    # Count per district
+    counts = joined.groupby("Cons_name").size().reset_index(name="clinic_count")  # Replace "Cons_name" if needed
+    counts["year"] = year
+    counts["month"] = m
+
+    results.append(counts)
+
+# Guard: if no results, exit
+if not results:
+    print("No data found in any month. Exiting.")
+    exit()
+
+# Combine all months
+final_df = pd.concat(results, ignore_index=True)
+final_df["date"] = pd.to_datetime(final_df["year"].astype(str) + "-" + final_df["month"].astype(str) + "-01")
+
+# Rename columns
+final_df.rename(columns={
+    "Cons_name": "region",  # Replace with correct column if needed
+    "clinic_count": "clinic_count"
+}, inplace=True)
+
+# Select final columns
+output_df = final_df[["date", "region", "clinic_count"]]
+
+# Write JSON
+with open(output_json, "w") as f:
+    json.dump(output_df.to_dict(orient="records"), f, indent=2, default=str)
+
+print("Script completed.")
