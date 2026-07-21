@@ -83,11 +83,11 @@ Raw data are not included in this repository. Users interested in reproducing th
 
 The analysis combines **multiple sources** of administrative, electoral, biographical, and spatial data.
 
-- **Parliamentary Questions:** Data on parliamentary questions were collected from [SOURCE WEBSITE](https://www.parlzim.gov.zw).
-- **Election Data:** Electoral data were obtained from [SOURCE WEBSITE](https://www.zec.org.zw).
-- **Biographical Data:** Biographical data on MPs and ministers were collected from various sources, including [SOURCE WEBSITE](https://www.parlzim.gov.zw).
-- **Spatial Data:** Geographic data on infant mortality were obtained from [SOURCE WEBSITE](https://dhsprogram.com/data/dataset/Zimbabwe_Standard-DHS_2015.cfm?flag=0). Geographic data on mission stations were obtained from [SOURCE WEBSITE](https://dataverse.harvard.edu/citation?persistentId=doi:10.7910/DVN/E9EEMQ).
-- **Infrastructure Data:** Road and health facility data were retrieved from [SOURCE WEBSITE](https://download.geofabrik.de/africa/zimbabwe.html).
+- **Parliamentary Questions:** Data on parliamentary questions were collected from [the Parliament of Zimbabwe](https://www.parlzim.gov.zw).
+- **Election Data:** Electoral data were obtained from [the Zimbabwe Electoral Commission](https://www.zec.org.zw).
+- **Biographical Data:** Biographical data on MPs and ministers were collected from various sources, including [the Parliament of Zimbabwe](https://www.parlzim.gov.zw).
+- **Spatial Data:** Geographic data on infant mortality were obtained from [DHS](https://dhsprogram.com/data/dataset/Zimbabwe_Standard-DHS_2015.cfm?flag=0). Geographic data on mission stations were obtained from [Hedde-von Westernhagen und Becker (2022)](https://doi.org/10.1163/24523666-bja10027).
+- **Infrastructure Data:** Road and health facility data were retrieved from [Geofabrik](https://download.geofabrik.de/africa/zimbabwe.html).
 
 ## Reproducibility
 
